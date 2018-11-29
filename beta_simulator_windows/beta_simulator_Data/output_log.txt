@@ -1,0 +1,41 @@
+Initialize engine version: 5.5.1f1 (88d00a7498cd)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce 940M (ID=0x1347)
+    Vendor:   NVIDIA
+    VRAM:     2010 MB
+    Driver:   20.19.15.4549
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\Assembly-UnityScript.dll (this message is harmless)
+Loading C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\Assembly-UnityScript.dll into Unity Child Domain
+Platform assembly: C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+- Completed reload, in  2.113 seconds
+Platform assembly: C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\System.dll (this message is harmless)
+OnLevelWasLoaded was found on ReturnToMainMenu
+This message has been deprecated and will be removed in a later version of Unity.
+Add a delegate to SceneManager.sceneLoaded instead to get notifications after scene loading has completed
+ 
+(Filename:  Line: 382)
+
+Platform assembly: C:\Users\bapow\Code\MachineLearning_TermProject\beta_simulator_windows\beta_simulator_Data\Managed\Mono.Security.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+<RI> Initializing input.
+XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 42.917213 ms
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: 269c -> priority: 1 
