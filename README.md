@@ -13,3 +13,9 @@ Justin Concepcion [@justinconcepcion](https://github.com/justinconcepcion)
 ### Resources
 
 [Udacity's Self Driving Car Simular](https://github.com/udacity/self-driving-car-sim)
+
+[Anaconda](https://www.anaconda.com/)
+
+[Tensorflow-GPU](https://www.tensorflow.org/install/)
+
+[Keris](https://keras.io/)
