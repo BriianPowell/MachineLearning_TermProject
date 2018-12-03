@@ -54,12 +54,16 @@ def telemetry(sid, data):
         
         except Exception as e:
             print(e)
-
+        
+        if args.image_folder != '':
+            timestamp = datatime.utcnow().strftime('%Y_%m_%d_%H_%S_%f')[:-3]
+            image_filename = os.path.join(args.image_folder, timestamp)
+            image.save('{}.jpg'.format(image_filename))
     else:
         sio.emit('manual', data={}, skip_sid=True)
 
 
-@sio.on('connect'):
+@sio.on('connect')
 def connect(sid, environ):
     print("Connect ", sid)
     send_control(0,0)
@@ -96,7 +100,7 @@ if __name__ == '__main__':
     if args.image_folder != '':
         print('Creating image folder at {}'.format(args.image_folder))
         if not os.path.exists(args.image_folder):
-            os.makedirs(args.image_folder)3
+            os.makedirs(args.image_folder)
         else: 
             shutil.rmtree(args.image_folder)
             os.makedirs(args.image_folder)
@@ -105,5 +109,4 @@ if __name__ == '__main__':
         print("Not recording this run...")
 
     app = socketio.Middleware(sio, app)
-
-    eventlet.wsgi.server(eventlet.listen((''. 4567)), app)
+    eventlet.wsgi.server(eventlet.listen(('', 4567)), app)
