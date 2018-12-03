@@ -109,10 +109,5 @@ venv.bak/
 # data mage files
 data/IMG
 
-<<<<<<< HEAD
-# car simulator files
-beta_simulator_windows/
-=======
 # test car simulator folder
 beta_simulator_windows/
->>>>>>> 43766f691ca6b1ae440d2d0dab874e7daa23b4e9
