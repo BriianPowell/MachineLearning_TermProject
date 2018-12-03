@@ -37,7 +37,7 @@ def telemetry(sid, data):
 
         try:
             image = np.asarray(image)
-            image = utils.preprocess(image)
+            image = helper.preprocess(image)
             image = np.array([image])
 
             steering_angle = float(model.predict(image, batch_size=1))
@@ -56,7 +56,7 @@ def telemetry(sid, data):
             print(e)
         
         if args.image_folder != '':
-            timestamp = datatime.utcnow().strftime('%Y_%m_%d_%H_%S_%f')[:-3]
+            timestamp = datetime.utcnow().strftime('%Y_%m_%d_%H_%S_%f')[:-3]
             image_filename = os.path.join(args.image_folder, timestamp)
             image.save('{}.jpg'.format(image_filename))
     else:
