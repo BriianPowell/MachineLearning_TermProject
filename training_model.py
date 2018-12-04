@@ -1,29 +1,21 @@
 import numpy as np 
-
 #data analysis library used to read rows and columns in dataset
 import pandas as pd 
-
 #splits arrays and matrices into random train and test subsets
 from sklearn.model_selection import train_test_split 
-
 #neural network library
 import keras
 #linear stack of layers
 from keras.models import Sequential 
-
 #optimization for gradient descent
 from keras.optimizers import Adam 
-
 #save model with ModelCheckPoint
 from keras.callbacks import ModelCheckpoint
-
 #CNN Layers
 from keras.layers import Dense, Dropout, Flatten 
 from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout 
-
 #helper methods
 from helper import INPUT_SHAPE, batch_generator 
-
 #parser for command line options, arguments and sub-commands
 import argparse 
 
@@ -34,8 +26,6 @@ np.random.seed(0)
 
 
 def loadData(args):
-
-	
     #reads CSV dataset into a dataframe = data_df 
     data_df = pd.read_csv(os.path.join(os.getcwd(), args.data_dir, 'driving_log.csv'), names=['center', 'left', 'right', 'steering', 'throttle', 'reverse', 'speed'])
 	
@@ -52,16 +42,11 @@ def loadData(args):
     return x_train, x_valid, y_train, y_valid
 
 def buildModel(args):
-
     '''
     NVIDIA's CNN Architecture
-	
     First layer performs image normalization followed by 5 convolutional layers.
-	
     Dropout is added to avoid overfitting.
-	
     Finally, 3 fully connected layers leads to a final output steering command.
-	
     The fully connected layers are designed to function as a controller for steering.
     '''
     model = Sequential()
@@ -82,8 +67,6 @@ def buildModel(args):
     return model
 
 def trainModel(model, args, x_train, x_valid, y_train, y_valid):
-
-	
     #ModelCheckPoint saves each model after every epoch
     checkpoint = ModelCheckpoint('model-{epoch:03d}.h5',
                                  monitor='val_loss',
