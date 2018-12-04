@@ -12,7 +12,7 @@ Justin Concepcion [@justinconcepcion](https://github.com/justinconcepcion)
 
 ### Resources
 
-[Udacity's Self Driving Car Simular](https://github.com/udacity/self-driving-car-sim)
+[Udacity's Self Driving Car Project](https://github.com/udacity/CarND-Behavioral-Cloning-P3)
 
 [Anaconda](https://www.anaconda.com/)
 
