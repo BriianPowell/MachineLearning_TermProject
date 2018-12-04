@@ -18,4 +18,4 @@ Justin Concepcion [@justinconcepcion](https://github.com/justinconcepcion)
 
 [Tensorflow-GPU](https://www.tensorflow.org/install/)
 
-[Keris](https://keras.io/)
+[Keras](https://keras.io/)
