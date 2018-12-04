@@ -1,40 +1,71 @@
-import pandas as pd
-import numpy as np
+import numpy as np 
 
-from sklearn.model_selection import train_test_split
+#data analysis library used to read rows and columns in dataset
+import pandas as pd 
 
+#splits arrays and matrices into random train and test subsets
+from sklearn.model_selection import train_test_split 
+
+#neural network library
 import keras
-from keras.models import Sequential
-from keras.optimizers import Adam
+#linear stack of layers
+from keras.models import Sequential 
+
+#optimization for gradient descent
+from keras.optimizers import Adam 
+
+#save model with ModelCheckPoint
 from keras.callbacks import ModelCheckpoint
-from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout
 
-from helper import INPUT_SHAPE, batch_generator
+#CNN Layers
+from keras.layers import Dense, Dropout, Flatten 
+from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout 
 
-import argparse
+#helper methods
+from helper import INPUT_SHAPE, batch_generator 
 
-import os
+#parser for command line options, arguments and sub-commands
+import argparse 
+
+#read files
+import os 
 
 np.random.seed(0)
 
 
 def loadData(args):
 
+	
+    #reads CSV dataset into a dataframe = data_df 
     data_df = pd.read_csv(os.path.join(os.getcwd(), args.data_dir, 'driving_log.csv'), names=['center', 'left', 'right', 'steering', 'throttle', 'reverse', 'speed'])
-
+	
+    #store camera images into input data, x
+    #images include center, right, and left
     x = data_df[['center', 'left', 'right']].values
-
+	
+    #store the steering angle data as output, y
     y = data_df['steering'].values
-
+	
+    #Splits training and testing sets 
     x_train, x_valid,  y_train, y_valid = train_test_split(x, y, test_size=args.test_size, random_state=0)
 
     return x_train, x_valid, y_train, y_valid
 
 def buildModel(args):
 
+    '''
+    NVIDIA's CNN Architecture
+	
+    First layer performs image normalization followed by 5 convolutional layers.
+	
+    Dropout is added to avoid overfitting.
+	
+    Finally, 3 fully connected layers leads to a final output steering command.
+	
+    The fully connected layers are designed to function as a controller for steering.
+    '''
     model = Sequential()
-    model.add(Lambda(lambda x: x/127.5-1.0, input_shape=INPUT_SHAPE))
+    model.add(Lambda(lambda x: x/127.5-1.0, input_shape=INPUT_SHAPE)) #normalization
     model.add(Conv2D(24, (5, 5), activation='elu', strides=(2, 2)))
     model.add(Conv2D(36, (5, 5), activation='elu', strides=(2, 2)))
     model.add(Conv2D(48, (5, 5), activation='elu', strides=(2, 2)))
@@ -52,14 +83,19 @@ def buildModel(args):
 
 def trainModel(model, args, x_train, x_valid, y_train, y_valid):
 
+	
+    #ModelCheckPoint saves each model after every epoch
     checkpoint = ModelCheckpoint('model-{epoch:03d}.h5',
                                  monitor='val_loss',
                                  verbose=0,
                                  save_best_only=args.save_best_only,
-                                 mode='auto')
-
+                                 mode='auto') #model's weights will be saved
+	
+    #mean squared error used to calculate loss
+    #Adam optimization algorithm for stochastic gradient descent
     model.compile(loss='mean_squared_error', optimizer=Adam(lr=args.learning_rate))
 
+    #trains model on data generated batch by batch
     model.fit_generator(batch_generator(args.data_dir, x_train, y_train, args.batch_size, True),
                         args.samples_per_epoch,
                         args.epochs,
@@ -69,11 +105,13 @@ def trainModel(model, args, x_train, x_valid, y_train, y_valid):
                         validation_steps=len(x_valid),
                         max_queue_size=1)
 
+#helper method converts string to boolean
 def s2B(s):
     s = s.lower()
     return s == 'true' or s == 'yes' or s == 'y' or s == '1'
 
 def main():
+    #Command line interface for training/validation dataset
     parser = argparse.ArgumentParser(description='Self Driving Car Training Program')
     parser.add_argument('-d', help='data directory',        dest='data_dir',          type=str,   default='data')
     parser.add_argument('-t', help='test size fraction',    dest='test_size',         type=float, default=0.2)
