@@ -1,23 +1,23 @@
 # Environment dependencies copied from: https://github.com/udacity/CarND-Term1-Starter-Kit
 # Updated for Keras 2 and tensorflow-gpu 1.10
-name: autonomous-car-simulation
+name: autonomous-car-simulation-gpu
 dependencies:
     - python==3.6.7
     - numpy
     - matplotlib
     - jupyter
-    - opencv3
     - pillow
     - scikit-learn
     - scikit-image
     - scipy
     - h5py
     - eventlet
-    - flask-socketio
+    - python-socketio
+    - flask
     - seaborn
     - pandas
     - imageio
     - pip:
-        - moviepy
+        - opencv-python
         - tensorflow-gpu==1.10
         - keras==2.2
