@@ -1,47 +1,52 @@
 import numpy as np 
-#data analysis library used to read rows and columns in dataset
+# data analysis library used to read rows and columns in dataset
 import pandas as pd 
-#splits arrays and matrices into random train and test subsets
+# splits arrays and matrices into random train and test subsets
 from sklearn.model_selection import train_test_split 
-#neural network library
+# neural network library
 import keras
-#linear stack of layers
+# linear stack of layers
 from keras.models import Sequential 
-#optimization for gradient descent
+# optimization for gradient descent
 from keras.optimizers import Adam 
-#save model with ModelCheckPoint
+# save model with ModelCheckPoint
 from keras.callbacks import ModelCheckpoint
-#CNN Layers
+# CNN Layers
 from keras.layers import Dense, Dropout, Flatten 
 from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout 
-#helper methods
+# helper methods
 from helper import INPUT_SHAPE, batch_generator 
-#parser for command line options, arguments and sub-commands
-import argparse 
 
-#read files
+# read files
 import os 
 
+# seed train_test_split for training and validation data
 np.random.seed(0)
 
+'''
+Written by:
+Brian Powell @BriianPowell
+Justin Concepcion @JustinConcepcion
+CECS 456: Machine Learning
+Wenlu Zhang
+'''
 
-def loadData(args):
-    #reads CSV dataset into a dataframe = data_df 
-    data_df = pd.read_csv(os.path.join(os.getcwd(), args.data_dir, 'driving_log.csv'), names=['center', 'left', 'right', 'steering', 'throttle', 'reverse', 'speed'])
-	
-    #store camera images into input data, x
-    #images include center, right, and left
+def loadData(data_dir, test_size):
+    # reads CSV dataset into a dataframe = data_df 
+    data_df = pd.read_csv(os.path.join(os.getcwd(), data_dir, 'driving_log.csv'), names=['center', 'left', 'right', 'steering', 'throttle', 'reverse', 'speed'])
+
+    # store camera images into input data, x
+    # images include center, right, and left
     x = data_df[['center', 'left', 'right']].values
-	
-    #store the steering angle data as output, y
+    # store the steering angle data as output, y
     y = data_df['steering'].values
-	
-    #Splits training and testing sets 
-    x_train, x_valid,  y_train, y_valid = train_test_split(x, y, test_size=args.test_size, random_state=0)
+    # splits training and testing sets, 20% of data set to test split
+    x_train, x_valid, y_train, y_valid = train_test_split(x, y, test_size=test_size, random_state=0) 
 
     return x_train, x_valid, y_train, y_valid
 
-def buildModel(args):
+
+def buildModel(drop_out):
     '''
     NVIDIA's CNN Architecture
     First layer performs image normalization followed by 5 convolutional layers.
@@ -56,7 +61,7 @@ def buildModel(args):
     model.add(Conv2D(48, (5, 5), activation='elu', strides=(2, 2)))
     model.add(Conv2D(64, (3, 3), activation='elu'))
     model.add(Conv2D(64, (3, 3), activation='elu'))
-    model.add(Dropout(args.keep_prob))
+    model.add(Dropout(drop_out))
     model.add(Flatten())
     model.add(Dense(100, activation='elu'))
     model.add(Dense(50, activation='elu'))
@@ -66,65 +71,64 @@ def buildModel(args):
 
     return model
 
-def trainModel(model, args, x_train, x_valid, y_train, y_valid):
-    #ModelCheckPoint saves each model after every epoch
-    checkpoint = ModelCheckpoint('model-{epoch:03d}.h5',
+def trainModel(model, data_dir, batch_size, samples_per_epoch, epochs, save_best_only, learning_rate, x_train, x_valid, y_train, y_valid):
+    # ModelCheckPoint saves each model when save_best_only has been fullfilled
+    checkpoint = ModelCheckpoint('lakeModel-{epoch:03d}.h5',
                                  monitor='val_loss',
                                  verbose=0,
-                                 save_best_only=args.save_best_only,
+                                 save_best_only=save_best_only,
                                  mode='auto') #model's weights will be saved
 	
-    #mean squared error used to calculate loss
-    #Adam optimization algorithm for stochastic gradient descent
-    model.compile(loss='mean_squared_error', optimizer=Adam(lr=args.learning_rate))
+    # mean squared error used to calculate loss
+    # Adam optimization algorithm for stochastic gradient descent
+    model.compile(loss='mean_squared_error', optimizer=Adam(lr=learning_rate))
 
-    #trains model on data generated batch by batch
-    model.fit_generator(batch_generator(args.data_dir, x_train, y_train, args.batch_size, True),
-                        args.samples_per_epoch,
-                        args.epochs,
+    # trains model on data generated batch by batch
+    model.fit_generator(batch_generator(data_dir, x_train, y_train, batch_size, True),
+                        samples_per_epoch,
+                        epochs,
                         verbose=1,
                         callbacks=[checkpoint],
-                        validation_data=batch_generator(args.data_dir, x_valid, y_valid, args.batch_size, False),
+                        validation_data=batch_generator(data_dir, x_valid, y_valid, batch_size, False),
                         validation_steps=len(x_valid),
                         max_queue_size=1)
 
-#helper method converts string to boolean
-def s2B(s):
-    s = s.lower()
-    return s == 'true' or s == 'yes' or s == 'y' or s == '1'
 
 def main():
-    #Command line interface for training/validation dataset
-    parser = argparse.ArgumentParser(description='Self Driving Car Training Program')
-    parser.add_argument('-d', help='data directory',        dest='data_dir',          type=str,   default='data')
-    parser.add_argument('-t', help='test size fraction',    dest='test_size',         type=float, default=0.2)
-    parser.add_argument('-k', help='drop out probability',  dest='keep_prob',         type=float, default=0.5)
-    parser.add_argument('-n', help='number of epochs',      dest='epochs',            type=int,   default=10)
-    parser.add_argument('-s', help='samples per epoch',     dest='samples_per_epoch', type=int,   default=20000)
-    parser.add_argument('-b', help='batch size',            dest='batch_size',        type=int,   default=40)
-    parser.add_argument('-o', help='save best models only', dest='save_best_only',    type=s2B,   default='true')
-    parser.add_argument('-l', help='learning rate',         dest='learning_rate',     type=float, default=1.0e-4)
-    args = parser.parse_args()
+    data_dir = 'data'          # data directory
+    test_size = 0.2            # test size fraction
+    drop_out = 0.5             # drop out probability
+    epochs = 10                # number of epochs
+    samples_per_epoch = 20000  # samples per epoch
+    batch_size = 40            # batch size
+    save_best_only = True      # save best only option
+    learning_rate = 1.0e-4     # learning rate
 
-    #print parameters
+    # print parameters
     print('-' * 30)
     print('Parameters')
     print('-' * 30)
-    for key, value in vars(args).items():
-        print('{:<20} := {}'.format(key, value))
+    print('{:<20} := {}'.format("data_dir:", data_dir))
+    print('{:<20} := {}'.format("test_size", test_size))
+    print('{:<20} := {}'.format("drop_out", drop_out))
+    print('{:<20} := {}'.format("epochs", epochs))
+    print('{:<20} := {}'.format("samples_per_epoch", samples_per_epoch))
+    print('{:<20} := {}'.format("batch_size", batch_size))
+    print('{:<20} := {}'.format("save_best_only", save_best_only))
+    print('{:<20} := {}'.format("learning_rate", learning_rate))
     print('-' * 30)
 
-    #load data
-    data = loadData(args)
-    #build model
-    model = buildModel(args)
-    #train model on data, it saves as model.h5 
-    trainModel(model, args, *data)
+    # load data
+    data = loadData(data_dir, test_size)
+    # build model
+    model = buildModel(drop_out)
+    # train model on data, it saves as model.h5 
+    trainModel(model, data_dir, batch_size, samples_per_epoch, epochs, save_best_only, learning_rate, *data)
 
 if __name__ == '__main__':
     main()
 
-"""
+'''
 OUTPUT:
 Using TensorFlow backend.
 ------------------------------
@@ -200,4 +204,4 @@ Epoch 9/10
 20000/20000 [==============================] - 1901s 95ms/step - loss: 0.0176 - val_loss: 0.0166
 Epoch 10/10
 20000/20000 [==============================] - 1888s 94ms/step - loss: 0.0173 - val_loss: 0.0165
-"""
+'''

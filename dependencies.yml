@@ -1,4 +1,4 @@
-# Environment dependencies copied from: https://github.com/udacity/CarND-Term1-Starter-Kit
+# Environment dependencies updated from: https://github.com/udacity/CarND-Term1-Starter-Kit
 # No GPU dependent installs, can get latest from each
 name: autonomous-car-simulation
 dependencies:
