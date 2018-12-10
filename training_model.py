@@ -48,12 +48,37 @@ def loadData(data_dir, test_size):
 
 def buildModel(drop_out):
     '''
+    Smaller implementation of a VGGNet 
+    First Layer is image normalization as suggested by NVIDIA
+    3 Convolution Layers
+    Each is followed by Max Pool
+    Drop Out is 0.5
+    3 Fully Connected layers to get one final output
+    '''
+    model = Sequential()
+    model.add(Lambda(lambda x: x/127.5-1.0, input_shape=INPUT_SHAPE)) #normalization
+    model.add(Conv2D(32, (3, 3), activation='relu', strides=(1, 1), padding='same'))
+    model.add(MaxPooling2D((2, 2), padding='same'))
+    model.add(Conv2D(64, (3, 3), activation='relu', strides=(1, 1), padding='same'))
+    model.add(MaxPooling2D((2, 2), padding='same'))
+    model.add(Conv2D(128, (3, 3), activation='relu', strides=(1, 1), padding='same'))
+    model.add(MaxPooling2D((2, 2), padding='same'))
+    model.add(Flatten())
+    model.add(Dropout(drop_out))
+    model.add(Dense(128))
+    model.add(Dense(64))
+    model.add(Dense(1))
+    model.summary()
+
+    return model
+
+    '''
     NVIDIA's CNN Architecture
     First layer performs image normalization followed by 5 convolutional layers.
     Dropout is added to avoid overfitting.
     Finally, 3 fully connected layers leads to a final output steering command.
     The fully connected layers are designed to function as a controller for steering.
-    '''
+    
     model = Sequential()
     model.add(Lambda(lambda x: x/127.5-1.0, input_shape=INPUT_SHAPE)) #normalization
     model.add(Conv2D(24, (5, 5), activation='elu', strides=(2, 2)))
@@ -68,8 +93,7 @@ def buildModel(drop_out):
     model.add(Dense(10, activation='elu'))
     model.add(Dense(1))
     model.summary()
-
-    return model
+    '''
 
 def trainModel(model, data_dir, batch_size, samples_per_epoch, epochs, save_best_only, learning_rate, x_train, x_valid, y_train, y_valid):
     # ModelCheckPoint saves each model when save_best_only has been fullfilled
@@ -97,7 +121,7 @@ def trainModel(model, data_dir, batch_size, samples_per_epoch, epochs, save_best
 def main():
     data_dir = 'data'          # data directory
     test_size = 0.2            # test size fraction
-    drop_out = 0.5             # drop out probability
+    drop_out = 0.5              # drop out probability
     epochs = 10                # number of epochs
     samples_per_epoch = 20000  # samples per epoch
     batch_size = 40            # batch size

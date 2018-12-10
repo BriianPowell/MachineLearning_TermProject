@@ -19,10 +19,10 @@ app = Flask(__name__)
 model = None
 prev_image_array = None
 
-
 MAX_SPEED = 25
 MIN_SPEED = 10
 speed_limit = MAX_SPEED
+
 
 @sio.on('telemetry')
 def telemetry(sid, data):
@@ -36,8 +36,9 @@ def telemetry(sid, data):
         # current image from center camera of vehicle
         image = Image.open(BytesIO(base64.b64decode(data['image'])))
 
+        # save frame
         if args.image_folder != '':
-            timestamp = datetime.utcnow().strftime('%Y_%m_%d_%H_%S_%f')[:-3]
+            timestamp = datetime.utcnow().strftime('%Y_%m_%d_%H_%M_%S_%f')[:-3]
             image_filename = os.path.join(args.image_folder, timestamp)
             image.save('{}.jpg'.format(image_filename))
 
@@ -45,7 +46,7 @@ def telemetry(sid, data):
             image = np.asarray(image)  # from PIL image to numpy array
             image = helper.preprocess(image)   # apply preprocessing
             image = np.array([image])   # the model expects 4D array
-
+          
             # predict the steering angle for the image
             steering_angle = float(model.predict(image, batch_size=1))
             
@@ -63,9 +64,11 @@ def telemetry(sid, data):
             send_control(steering_angle, throttle)  
         except Exception as e:
             print(e)
+            
     else:
         # NOTE: DON'T EDIT THIS.
         sio.emit('manual', data={}, skip_sid=True)
+
 
 @sio.on('connect')
 def connect(sid, environ):

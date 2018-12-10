@@ -111,3 +111,6 @@ data/IMG
 
 # test car simulator folder
 beta_simulator_windows/
+
+# video creator
+video.py
