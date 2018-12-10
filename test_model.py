@@ -48,10 +48,10 @@ def telemetry(sid, data):
 
             # predict the steering angle for the image
             steering_angle = float(model.predict(image, batch_size=1))
+            
             # lower the throttle as the speed increases
-            # if the speed is above the current speed limit, we are on a downhill.
+            # if the speed is above the current speed limit, we are on a downhill.  
             # make sure we slow down first and then go back to the original max speed.
-
             global speed_limit
             if speed > speed_limit:
                 speed_limit = MIN_SPEED # slow vehicle down
